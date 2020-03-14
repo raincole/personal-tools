@@ -31,16 +31,19 @@ def blend_cover(cover: Image.Image, folder: Image.Image, margin=80):
 
     return blended_img
 
+def get_cover(path, tempdir):
+    if is_image(path):
+        return Image.open(path)
+    else:
+        subprocess.run(["qlmanage", "-t", "-f", "8", path, "-o", tempdir], check=True)
+        return Image.open(os.path.join(tempdir, os.path.basename(path) + ".png"))
+
 
 def main():
     FOLDER_ICON_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "folder_icon.png")
     path = os.path.abspath(sys.argv[1])
     with tempfile.TemporaryDirectory() as tempdir:
-        if not is_image(path):
-            subprocess.run(["qlmanage", "-t", "-f", "8", path, "-o", tempdir], check=True)
-            path = os.path.join(tempdir, path + ".png")
-
-        cover = Image.open(path).convert("RGBA")
+        cover = get_cover(path, tempdir).convert("RGBA")
         folder_icon = Image.open(FOLDER_ICON_PATH) 
         blended = blend_cover(cover, folder_icon)
 
