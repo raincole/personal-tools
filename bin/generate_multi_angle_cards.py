@@ -1,0 +1,1 @@
+../anki/generate_multi_angle_cards.py
