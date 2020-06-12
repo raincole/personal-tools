@@ -1,1 +1,0 @@
-../anki/render_generate_anki.fish
